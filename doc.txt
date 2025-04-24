@@ -1,0 +1,15 @@
+php-socket/
+├── src/
+│   ├── config/
+│   │   └── php-socket.php
+│   ├── Contracts/
+│   │   └── SocketInterface.php
+│   ├── Facades/
+│   │   └── PhpSocket.php
+│   ├── Services/
+│   │   └── SocketService.php
+│   ├── PhpSocketServiceProvider.php
+├── tests/
+│   └── SocketServiceTest.php
+├── composer.json
+├── README.md
