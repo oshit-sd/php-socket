@@ -21,9 +21,9 @@ class SocketService implements SocketInterface
      */
     public function __construct()
     {
-        $this->host = config('php-socket.host');
-        $this->port = config('php-socket.port');
-        $this->apiKey = config('php-socket.api_key');
+        $this->host = config('phpsocket.host');
+        $this->port = config('phpsocket.port');
+        $this->apiKey = config('phpsocket.api_key');
 
         $this->url = "ws://{$this->host}/socket.io/?EIO=4&transport=websocket";
 

@@ -1,5 +1,5 @@
 {
-    "name": "oshitsd/php-socket",
+    "name": "oshitsd/phpsocket",
     "description": "A PHP package to interact with WebSocket servers. It provides methods to connect, send, receive, and close WebSocket connections, with Laravel integration for seamless usage.",
     "type": "library",
     "license": "MIT",

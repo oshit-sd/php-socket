@@ -10,9 +10,9 @@ class PhpSocketServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/config/phsocket.php', 'phpsocket');
+        $this->mergeConfigFrom(__DIR__ . '/config/phpsocket.php', 'phpsocket');
 
-        $this->app->singleton('php-socket', function () {
+        $this->app->singleton('phpsocket', function () {
             return new SocketService();
         });
 

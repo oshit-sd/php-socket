@@ -1,7 +1,7 @@
-php-socket/
+phpsocket/
 ├── src/
 │   ├── config/
-│   │   └── php-socket.php
+│   │   └── phpsocket.php
 │   ├── Contracts/
 │   │   └── SocketInterface.php
 │   ├── Facades/

@@ -8,6 +8,6 @@ class PhpSocket extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'php-socket';
+        return 'phpsocket';
     }
 }

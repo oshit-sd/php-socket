@@ -36,7 +36,7 @@ Publish the config file:
 php artisan vendor:publish --tag=config
 ```
 
-This will create a `config/php-socket.php` file where you can configure the WebSocket host and port.
+This will create a `config/phpsocket.php` file where you can configure the WebSocket host and port.
 
 ---
 
@@ -47,9 +47,10 @@ In your `.env` file, add:
 ```env
 SOCKET_HOST=127.0.0.1
 SOCKET_PORT=3000
+PHP_SOCKET_API_KEY=''
 ```
 
-Or modify the `config/php-socket.php` file directly.
+Or modify the `config/phpsocket.php` file directly.
 
 ---
 
