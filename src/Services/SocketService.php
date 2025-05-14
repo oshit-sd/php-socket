@@ -10,6 +10,7 @@ class SocketService implements SocketInterface
 {
     private string $host;
     private int $port;
+    private string $apiKey;
     private string $url;
     private ?Client $client = null;
     private bool $connected = false;
@@ -22,25 +23,48 @@ class SocketService implements SocketInterface
     {
         $this->host = config('php-socket.host');
         $this->port = config('php-socket.port');
-        $this->url = "ws://{$this->host}:{$this->port}/socket.io/?EIO=4&transport=websocket";
+        $this->apiKey = config('php-socket.api_key');
+
+        $this->url = "ws://{$this->host}/socket.io/?EIO=4&transport=websocket";
+
+        if ($this->port) {
+            $this->url = "ws://{$this->host}:{$this->port}/socket.io/?EIO=4&transport=websocket";
+        }
     }
 
     /**
      * Establish a connection to the WebSocket server.
      *
-     * @return string Success or error message.
+     * @param array $authData Authentication data
+     * @return array The connection response including status and message.
      */
-    public function connect(): string
+    public function connect(array $authData = []): array
     {
         try {
             $this->client = new Client($this->url, ['timeout' => 20]);
-            $this->client->send('40{"apiKey":"riseuplabs123"}'); // Custom handshake
+            $authInfo = [
+                "apiKey" => $this->apiKey,
+                "userId" => $authData['userId'] ?? null,
+                "userName" => $authData['userName'] ?? null,
+            ];
+
+            // Format message with authentication info
+            $this->client->send('40' . json_encode($authInfo));
             usleep(500000); // delay for 0.5 seconds or 500ms
             $this->connected = true;
 
-            return "✅ Connected to socket server successfully.";
+            return [
+                'status' => 'success',
+                'message' => 'Connected to socket server successfully.',
+                'data' => [
+                    'url' => "ws://{$this->host}:{$this->port}"
+                ]
+            ];
         } catch (Exception $e) {
-            return "❌ Connection failed: " . $e->getMessage();
+            return [
+                'status' => 'error',
+                'message' => 'Connection failed: ' . $e->getMessage(),
+            ];
         }
     }
 
@@ -48,12 +72,15 @@ class SocketService implements SocketInterface
      * Send a message to the WebSocket server.
      *
      * @param array $payload Data to send.
-     * @return string Success or error message.
+     * @return array The response including status and message.
      */
-    public function send(array $payload): string
+    public function send(array $payload): array
     {
         if (!$this->isConnected()) {
-            return "⚠️ Not connected. Call connect() first.";
+            return [
+                'status' => 'error',
+                'message' => 'Not connected. Call connect() first.',
+            ];
         }
 
         try {
@@ -61,47 +88,74 @@ class SocketService implements SocketInterface
             $this->client->send($message);
             $this->client->close();
 
-            return "📤 Message sent.";
+            return [
+                'status' => 'success',
+                'message' => 'Message sent successfully.',
+                'data' => $payload
+            ];
         } catch (Exception $e) {
-            return "❌ Send failed: " . $e->getMessage();
+            return [
+                'status' => 'error',
+                'message' => 'Send failed: ' . $e->getMessage(),
+            ];
         }
     }
 
     /**
-     * Receive a message from the WebSocket server.
+     * Receive acknowledgment from the WebSocket server.
      *
-     * @return string The received message or an error message.
+     * @return array The acknowledgment response including status and message.
      */
-    public function receive(): string
+    public function receiveAck(): array
     {
         if (!$this->isConnected()) {
-            return "⚠️ Not connected.";
+            return [
+                'status' => 'error',
+                'message' => 'Connection not established.',
+            ];
         }
 
         try {
             $msg = $this->client->receive();
-            return "📨 Received: $msg";
+            $json = substr($msg, 2);
+            $data = json_decode($json, true);
+
+            return [
+                'status' => 'success',
+                'message' => 'Acknowledgment received successfully.',
+                'data' => $data
+            ];
         } catch (Exception $e) {
-            return "❌ Receive failed: " . $e->getMessage();
+            return [
+                'status' => 'error',
+                'message' => 'Failed to receive acknowledgment: ' . $e->getMessage(),
+            ];
         }
     }
 
     /**
      * Close the WebSocket connection.
      *
-     * @return string Success or warning message.
+     * @return array The response including status and message.
      */
-    public function close(): string
+    public function close(): array
     {
         if ($this->client) {
             $this->client->close();
             $this->connected = false;
 
-            return "🔒 Connection closed.";
+            return [
+                'status' => 'success',
+                'message' => 'Connection closed successfully.',
+            ];
         }
 
-        return "⚠️ No active connection.";
+        return [
+            'status' => 'error',
+            'message' => 'No active connection to close.',
+        ];
     }
+
 
     /**
      * Check if the connection is active.

@@ -10,7 +10,7 @@ class PhpSocketServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/config/php-socket.php', 'php-socket');
+        $this->mergeConfigFrom(__DIR__ . '/config/phsocket.php', 'phpsocket');
 
         $this->app->singleton('php-socket', function () {
             return new SocketService();
@@ -22,7 +22,7 @@ class PhpSocketServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/config/php-socket.php' => config_path('php-socket.php'),
-        ], 'config');
+            __DIR__ . '/config/phpsocket.php' => config_path('phpsocket.php'),
+        ], 'phpsocket-config');
     }
 }
