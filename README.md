@@ -85,9 +85,9 @@ $connect = PhpSocket::connect($user);
 ## 📤 Send a Message
 
 ```php
-PhpSocket::send([
+$response = PhpSocket::send([
     "event" => "LARA_NOTIFY",
-    "to" => "all",
+    "to" => "all", // all | user_id
     "message" => [
         "time" => date('Y-m-d H:i:s'),
         "text" => "Laravel says hi 👋",
