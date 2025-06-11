@@ -9,7 +9,7 @@ use Oshitsd\PhpSocket\Contracts\SocketInterface;
 class SocketService implements SocketInterface
 {
     private string $host;
-    private int $port;
+    private string $env;
     private string $apiKey;
     private string $url;
     private ?Client $client = null;
@@ -22,14 +22,11 @@ class SocketService implements SocketInterface
     public function __construct()
     {
         $this->host = config('phpsocket.host');
-        $this->port = config('phpsocket.port');
+        $this->env = config('phpsocket.env');
         $this->apiKey = config('phpsocket.api_key');
 
-        $this->url = "ws://{$this->host}/socket.io/?EIO=4&transport=websocket";
-
-        if ($this->port) {
-            $this->url = "ws://{$this->host}:{$this->port}/socket.io/?EIO=4&transport=websocket";
-        }
+        $protocol = $this->env == 'production' ? 'wss' : 'ws';
+        $this->url = "{$protocol}://{$this->host}/socket.io/?EIO=4&transport=websocket";
     }
 
     /**
@@ -42,6 +39,8 @@ class SocketService implements SocketInterface
     {
         try {
             $this->client = new Client($this->url, ['timeout' => 20]);
+            $initialResponse = $this->client->receive();
+
             $authInfo = [
                 "apiKey" => $this->apiKey,
                 "userId" => $authData['userId'] ?? null,
@@ -51,13 +50,26 @@ class SocketService implements SocketInterface
             // Format message with authentication info
             $this->client->send('40' . json_encode($authInfo));
             usleep(500000); // delay for 0.5 seconds or 500ms
-            $this->connected = true;
 
+            // Receive the authentication response
+            $authResponse = $this->client->receive();
+            if (strpos($authResponse, 'Authentication error') !== false) {
+
+                $jsonAuthResponse = substr($authResponse, 2);
+                $authResponseMessage = json_decode($jsonAuthResponse, true);
+
+                return [
+                    'status' => 'error',
+                    'message' => $authResponseMessage['message'] ?? 'Authentication failed.',
+                ];
+            }
+
+            $this->connected = true;
             return [
                 'status' => 'success',
                 'message' => 'Connected to socket server successfully.',
                 'data' => [
-                    'url' => "ws://{$this->host}:{$this->port}"
+                    'host' => $this->host
                 ]
             ];
         } catch (Exception $e) {
@@ -79,14 +91,13 @@ class SocketService implements SocketInterface
         if (!$this->isConnected()) {
             return [
                 'status' => 'error',
-                'message' => 'Not connected. Call connect() first.',
+                'message' => 'Connection not established.',
             ];
         }
 
         try {
             $message = '42["message", ' . json_encode($payload) . ']';
             $this->client->send($message);
-            $this->client->close();
 
             return [
                 'status' => 'success',
@@ -116,14 +127,13 @@ class SocketService implements SocketInterface
         }
 
         try {
-            $msg = $this->client->receive();
-            $json = substr($msg, 2);
-            $data = json_decode($json, true);
+            $receiveAck = $this->client->receive();
+            $this->client->close();
 
             return [
                 'status' => 'success',
                 'message' => 'Acknowledgment received successfully.',
-                'data' => $data
+                'data' => json_decode(substr($receiveAck, 2), true)
             ];
         } catch (Exception $e) {
             return [

@@ -1,8 +1,22 @@
 {
-    "name": "oshitsd/phpsocket",
+    "name": "oshitsd/php-socket",
     "description": "A PHP package to interact with WebSocket servers. It provides methods to connect, send, receive, and close WebSocket connections, with Laravel integration for seamless usage.",
     "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/oshit-sd/php-socket",
+    "keywords": [
+        "websocket",
+        "socket",
+        "laravel",
+        "php",
+        "socket.io",
+        "php-websocket"
+    ],
+    "support": {
+        "email": "oshitsd99@gmail.com",
+        "issues": "https://github.com/oshit-sd/php-socket/issues",
+        "source": "https://github.com/oshit-sd/php-socket"
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {

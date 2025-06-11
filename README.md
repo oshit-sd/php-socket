@@ -16,8 +16,8 @@
 
 ## 🧰 Requirements
 
-- PHP 8.0 or higher
-- Laravel 9, 10, 11, 12 or upper
+- PHP 7.4 or higher
+- Laravel 8, 9, 10, 11, 12 or upper
 - WebSocket server with Socket.IO (EIO=4) support
 
 ---
@@ -33,7 +33,7 @@ composer require oshitsd/php-socket
 Publish the config file:
 
 ```bash
-php artisan vendor:publish --tag=config
+php artisan vendor:publish --tag=phpsocket-config
 ```
 
 This will create a `config/phpsocket.php` file where you can configure the WebSocket host and port.
@@ -45,18 +45,21 @@ This will create a `config/phpsocket.php` file where you can configure the WebSo
 In your `.env` file, add:
 
 ```env
-SOCKET_HOST=127.0.0.1
-SOCKET_PORT=3000
-PHP_SOCKET_API_KEY=''
+PHP_SOCKET_ENV=production
+PHP_SOCKET_HOST=127.0.0.1
+PHP_SOCKET_API_KEY=
 ```
 
 Or modify the `config/phpsocket.php` file directly.
 
+
 ---
 
-## 🧪 Basic Usage
+# 🧪 Basic Usage
 
-### Connect to Socket
+## 🔌 Connect to Socket
+
+### Without Authentication
 
 ```php
 use PhpSocket;
@@ -64,7 +67,22 @@ use PhpSocket;
 PhpSocket::connect();
 ```
 
-### Send a Message
+### With Authentication
+
+```php
+use PhpSocket;
+
+$user = [
+    "userId" => 1,
+    "userName" => "OSHIT SUTRA DAR"
+];
+
+$connect = PhpSocket::connect($user);
+```
+
+---
+
+## 📤 Send a Message
 
 ```php
 PhpSocket::send([
@@ -81,16 +99,20 @@ PhpSocket::send([
 ]);
 ```
 
-### Receive a Message
+---
+
+## 📩 Receive Message Response
 
 ```php
-$response = PhpSocket::receive();
+$response = PhpSocket::receiveAck();
 ```
 
-### Close the Connection
+---
+
+## 🔒 Close the Connection
 
 ```php
-PhpSocket::close();
+$close = PhpSocket::close();
 ```
 
 ---
@@ -100,7 +122,7 @@ PhpSocket::close();
 ```bash
 👋 Connected to socket server successfully.
 📤 Message sent.
-📨 Received: {message}
+📨 Received: {message response}
 🔒 Connection closed.
 ```
 
@@ -126,6 +148,8 @@ This package is open-source software licensed under the [MIT license](LICENSE).
 
 ## 🙌 Credits
 
-Developed by [Oshitsd](https://github.com/oshitsd)  
+Developed by [OSHIT SD](https://github.com/oshit-sd)  
 WebSocket client powered by [textalk/websocket](https://github.com/Textalk/websocket)
 
+
+![Packagist Version](https://img.shields.io/packagist/v/oshitsd/php-socket)
