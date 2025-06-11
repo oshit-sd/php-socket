@@ -46,8 +46,8 @@ In your `.env` file, add:
 
 ```env
 PHP_SOCKET_ENV=production
-PHP_SOCKET_HOST=127.0.0.1
-PHP_SOCKET_API_KEY=
+PHP_SOCKET_HOST=socket.techcanvas.info
+PHP_SOCKET_API_KEY=demo-api-key
 ```
 
 Or modify the `config/phpsocket.php` file directly.
@@ -199,7 +199,7 @@ This package is open-source software licensed under the [MIT license](LICENSE).
 
 ---
 
-## 🙌 Credits
+## 👨‍💻 Credits
 
 Developed by [OSHIT SD](https://github.com/oshit-sd)  
 WebSocket client powered by [textalk/websocket](https://github.com/Textalk/websocket)
