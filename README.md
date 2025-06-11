@@ -62,7 +62,7 @@ Or modify the `config/phpsocket.php` file directly.
 ### Without Authentication
 
 ```php
-use PhpSocket;
+use Oshitsd\PhpSocket\Facades\PhpSocket;
 
 PhpSocket::connect();
 ```
@@ -70,14 +70,12 @@ PhpSocket::connect();
 ### With Authentication
 
 ```php
-use PhpSocket;
+use Oshitsd\PhpSocket\Facades\PhpSocket;
 
-$user = [
+$connect = PhpSocket::connect([
     "userId" => 1,
     "userName" => "OSHIT SUTRA DAR"
-];
-
-$connect = PhpSocket::connect($user);
+]);
 ```
 
 ---
@@ -114,6 +112,61 @@ $response = PhpSocket::receiveAck();
 ```php
 $close = PhpSocket::close();
 ```
+
+---
+
+## 🛣️ Example Route Usage
+
+You can quickly test sending a message using a simple route in your Laravel application.
+
+```php
+use Illuminate\Support\Facades\Route;
+use Oshitsd\PhpSocket\Facades\PhpSocket;
+
+Route::get('send-notification', function () {
+
+    $connect = PhpSocket::connect([
+        "userId" => 1,
+        "userName" => "OSHIT SUTRA DAR"
+    ]);
+
+    $response = PhpSocket::send([
+        "event" => "VUE_MESSAGE",
+        "to" => "all", // Options: 'all' or specific user_id
+        "message" => [
+            "time" => date('Y-m-d H:i:s'),
+            "text" => "Laravel says hi 👋",
+            "user" => [
+                "id" => 1,
+                "name" => "OSHIT SUTRA DAR"
+            ]
+        ]
+    ]);
+
+    $close = PhpSocket::close();
+
+    // Return the connection and message response
+    return response()->json([
+        'connect' => $connect,
+        'response' => $response,
+        'close' => $close
+    ]);
+});
+```
+
+When you visit `http://your-app-url/send-notification`, this route will:
+
+* Connect to the WebSocket server
+* Send a message to all connected clients
+* Return the connection and response details as a JSON response
+
+
+### 🔍 Live Demo
+
+Once you hit the route `http://your-app-url/send-notification`, the message will be broadcasted to all connected clients.
+
+You can **view the real-time message output** here:
+👉 [Chat App Demo](https://oshit-sd-chat-app.vercel.app/)
 
 ---
 
