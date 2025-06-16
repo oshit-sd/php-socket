@@ -73,8 +73,9 @@ PhpSocket::connect();
 use Oshitsd\PhpSocket\Facades\PhpSocket;
 
 $connect = PhpSocket::connect([
-    "userId" => 1,
-    "userName" => "OSHIT SUTRA DAR"
+    "userId" => 1, // Optional
+    "userName" => "OSHIT SUTRA DAR", // Optional
+    "room" => "vue-chat" // Required
 ]);
 ```
 
@@ -85,7 +86,7 @@ $connect = PhpSocket::connect([
 ```php
 $response = PhpSocket::send([
     "event" => "LARA_NOTIFY",
-    "to" => "all", // all | user_id
+    "to" => "all", // Options: 'all' or specific user_id
     "message" => [
         "time" => date('Y-m-d H:i:s'),
         "text" => "Laravel says hi 👋",
@@ -127,12 +128,13 @@ Route::get('send-notification', function () {
 
     $connect = PhpSocket::connect([
         "userId" => 1,
-        "userName" => "OSHIT SUTRA DAR"
+        "userName" => "OSHIT SUTRA DAR",
+        "room" => "vue-chat"
     ]);
 
     $response = PhpSocket::send([
         "event" => "VUE_MESSAGE",
-        "to" => "all", // Options: 'all' or specific user_id
+        "to" => "all",
         "message" => [
             "time" => date('Y-m-d H:i:s'),
             "text" => "Laravel says hi 👋",
