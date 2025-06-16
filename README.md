@@ -73,9 +73,10 @@ PhpSocket::connect();
 use Oshitsd\PhpSocket\Facades\PhpSocket;
 
 $connect = PhpSocket::connect([
-    "userId" => 1, // Optional
-    "userName" => "OSHIT SUTRA DAR", // Optional
-    "room" => "vue-chat" // Required
+    "room" => "vue-chat" // Required: Name of the chat room to join
+    "role" => "user", // Optional: User role, defaults to 'user'. Options: 'user' or 'agent'
+    "userId" => 1, // Optional: Unique user identifier
+    "userName" => "OSHIT SUTRA DAR", // Optional: Display name of the user
 ]);
 ```
 
@@ -85,8 +86,8 @@ $connect = PhpSocket::connect([
 
 ```php
 $response = PhpSocket::send([
-    "event" => "LARA_NOTIFY",
-    "to" => "all", // Options: 'all' or specific user_id
+    "event" => "LARA_NOTIFY", // Required: Name of the event to broadcast
+    "to" => "all", // Target recipient(s). Options: 'all' (broadcast to everyone) or a specific user ID to send a private message.
     "message" => [
         "time" => date('Y-m-d H:i:s'),
         "text" => "Laravel says hi 👋",
@@ -127,9 +128,9 @@ use Oshitsd\PhpSocket\Facades\PhpSocket;
 Route::get('send-notification', function () {
 
     $connect = PhpSocket::connect([
+        "room" => "vue-chat",
         "userId" => 1,
         "userName" => "OSHIT SUTRA DAR",
-        "room" => "vue-chat"
     ]);
 
     $response = PhpSocket::send([
