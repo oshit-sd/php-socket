@@ -45,7 +45,7 @@ class SocketService implements SocketInterface
                 "apiKey" => $this->apiKey,
                 "userId" => $authData['userId'] ?? null,
                 "userName" => $authData['userName'] ?? null,
-                "role" => $authData['role'] ?? null,
+                "role" => $authData['role'] ?? 'user',
                 "room" => $authData['room'] ?? null,
             ];
 
