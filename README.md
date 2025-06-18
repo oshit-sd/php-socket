@@ -47,7 +47,7 @@ In your `.env` file, add:
 ```env
 PHP_SOCKET_ENV=production
 PHP_SOCKET_HOST=socket.techcanvas.info
-PHP_SOCKET_API_KEY=demo-api-key
+PHP_SOCKET_API_KEY=demo-tech-canvas-api-key
 ```
 
 Or modify the `config/phpsocket.php` file directly.
@@ -73,9 +73,9 @@ PhpSocket::connect();
 use Oshitsd\PhpSocket\Facades\PhpSocket;
 
 $connect = PhpSocket::connect([
-    "room" => "vue-chat" // Required: Name of the chat room to join
+    "room" => "DEMO_CHAT_ROOM" // Required: Name of the chat room to join
     "role" => "user", // Optional: User role, defaults to 'user'. Options: 'user' or 'agent'
-    "userId" => 1, // Optional: Unique user identifier
+    "userId" => 8001, // Optional: Unique user identifier
     "userName" => "OSHIT SUTRA DAR", // Optional: Display name of the user
 ]);
 ```
@@ -86,7 +86,7 @@ $connect = PhpSocket::connect([
 
 ```php
 $response = PhpSocket::send([
-    "event" => "LARA_NOTIFY", // Required: Name of the event to broadcast
+    "event" => "demo_chat", // Required: Name of the event to broadcast
     "to" => "all", // Target recipient(s). Options: 'all' (broadcast to everyone) or a specific user ID to send a private message.
     "message" => [
         "time" => date('Y-m-d H:i:s'),
@@ -128,19 +128,19 @@ use Oshitsd\PhpSocket\Facades\PhpSocket;
 Route::get('send-notification', function () {
 
     $connect = PhpSocket::connect([
-        "room" => "vue-chat",
-        "userId" => 1,
+        "room" => "DEMO_CHAT_ROOM",
+        "userId" => 8001,
         "userName" => "OSHIT SUTRA DAR",
     ]);
 
     $response = PhpSocket::send([
-        "event" => "VUE_MESSAGE",
+        "event" => "demo_chat",
         "to" => "all",
         "message" => [
             "time" => date('Y-m-d H:i:s'),
             "text" => "Laravel says hi 👋",
             "user" => [
-                "id" => 1,
+                "id" => 8001,
                 "name" => "OSHIT SUTRA DAR"
             ]
         ]
